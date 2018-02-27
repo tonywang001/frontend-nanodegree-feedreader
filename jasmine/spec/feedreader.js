@@ -31,42 +31,101 @@ $(function() {
          * in the allFeeds object and ensures it has a URL defined
          * and that the URL is not empty.
          */
-
+        it('have valid urls', function() {
+            for(const feed of allFeeds) {
+                expect(feed.url).toBeDefined();
+                expect(feed.url.length).not.toBe(0);
+            }
+        });
 
         /* TODO: Write a test that loops through each feed
          * in the allFeeds object and ensures it has a name defined
          * and that the name is not empty.
          */
+        it('have valid names', function() {
+            for(const feed of allFeeds) {
+                expect(feed.name).toBeDefined();
+                expect(feed.name.length).not.toBe(0);
+            }
+        });
     });
 
 
     /* TODO: Write a new test suite named "The menu" */
-
+    describe('The menu', function() {
         /* TODO: Write a test that ensures the menu element is
          * hidden by default. You'll have to analyze the HTML and
          * the CSS to determine how we're performing the
          * hiding/showing of the menu element.
          */
+        it('should be hidden by default', function() {
+            var bodyClass = document.getElementsByTagName('body')[0].className;
+            expect(bodyClass).toBeDefined();
+            expect(bodyClass).toBe('menu-hidden');
+        });
 
-         /* TODO: Write a test that ensures the menu changes
-          * visibility when the menu icon is clicked. This test
-          * should have two expectations: does the menu display when
-          * clicked and does it hide when clicked again.
-          */
+        /* TODO: Write a test that ensures the menu changes
+         * visibility when the menu icon is clicked. This test
+         * should have two expectations: does the menu display when
+         * clicked and does it hide when clicked again.
+         */
+        it('should change visibility when clicked', function() {
+            var menuIcon = $('.menu-icon-link');
+            var bodyNode = document.getElementsByTagName('body')[0];
+
+            // click on menu icon and expect menu to open
+            menuIcon.trigger('click');
+            expect(bodyNode.class).toBeUndefined();
+
+            // click on menu icon again and expect menu to close
+            menuIcon.trigger('click');
+            expect(bodyNode.className).toBeDefined();
+            expect(bodyNode.className).toBe('menu-hidden');
+        });
+    });
 
     /* TODO: Write a new test suite named "Initial Entries" */
-
+    describe('Initial Entries', function() {
         /* TODO: Write a test that ensures when the loadFeed
          * function is called and completes its work, there is at least
          * a single .entry element within the .feed container.
          * Remember, loadFeed() is asynchronous so this test will require
          * the use of Jasmine's beforeEach and asynchronous done() function.
          */
+        beforeEach(function(done) {
+            loadFeed(0, function() {
+                done();
+            });
+        });
+
+        it('should be created', function() {
+            // Get list of feeds
+            var feeds = document.getElementsByClassName('feed')[0].children;
+            // num feeds > 0
+            expect(feeds.length).toBeGreaterThan(0);
+        });
+    });
 
     /* TODO: Write a new test suite named "New Feed Selection" */
-
+    describe('New Feed Selection', function() {
         /* TODO: Write a test that ensures when a new feed is loaded
          * by the loadFeed function that the content actually changes.
          * Remember, loadFeed() is asynchronous.
          */
+        it('should change content', function(done) {
+            loadFeed(0, function() {
+                // Get href property of first feed
+                var feed1Href = document.getElementsByClassName('feed')[0]
+                                .children[0].getAttribute('href');
+                loadFeed(1, function() {
+                    // Get href property of first feed after loadFeed is
+                    // called again
+                    var newFeed1Href = document.getElementsByClassName('feed')[0]
+                                       .children[0].getAttribute('href');
+                    expect(feed1Href).not.toEqual(newFeed1Href);
+                    done();
+                });
+            });
+        });
+    });
 }());
