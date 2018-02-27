@@ -57,9 +57,7 @@ $(function() {
          * hidden by default.
          */
         it('should be hidden by default', function() {
-            var bodyClass = document.getElementsByTagName('body')[0].className;
-            expect(bodyClass).toBeDefined();
-            expect(bodyClass).toBe('menu-hidden');
+            expect($('body').hasClass('menu-hidden')).toBe(true);
         });
 
         /* Second test that ensures the menu changes
@@ -73,12 +71,11 @@ $(function() {
 
             // click on menu icon and expect menu to open
             menuIcon.trigger('click');
-            expect(bodyNode.class).toBeUndefined();
+            expect($('body').hasClass('menu-hidden')).toBe(false);
 
             // click on menu icon again and expect menu to close
             menuIcon.trigger('click');
-            expect(bodyNode.className).toBeDefined();
-            expect(bodyNode.className).toBe('menu-hidden');
+            expect($('body').hasClass('menu-hidden')).toBe(true);
         });
     });
 
@@ -97,10 +94,7 @@ $(function() {
         });
 
         it('should be created', function() {
-            // Get list of feeds
-            var feeds = document.getElementsByClassName('feed')[0].children;
-            // num feeds > 0
-            expect(feeds.length).toBeGreaterThan(0);
+            expect($('.feed .entry')).toBeTruthy();
         });
     });
 
@@ -111,15 +105,13 @@ $(function() {
          */
         it('should change content', function(done) {
             loadFeed(0, function() {
-                // Get href property of first feed
-                var feed1Href = document.getElementsByClassName('feed')[0]
-                                .children[0].getAttribute('href');
+                // Get html of feed 0
+                var feed0 = document.getElementsByClassName('feed')[0].innerHTML;
                 loadFeed(1, function() {
-                    // Get href property of first feed after loadFeed is
+                    // Get html of feed 1 after loadFeed is
                     // called again
-                    var newFeed1Href = document.getElementsByClassName('feed')[0]
-                                       .children[0].getAttribute('href');
-                    expect(feed1Href).not.toEqual(newFeed1Href);
+                    var feed1 = document.getElementsByClassName('feed')[0].innerHTML;
+                    expect(feed0).not.toEqual(feed1);
                     done();
                 });
             });
